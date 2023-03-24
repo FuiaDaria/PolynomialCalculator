@@ -27,20 +27,17 @@ public class CalcController {
         public void actionPerformed(ActionEvent e) {
             String one = view.getPx();
             String two = view.getQx();
-            if (!(Calculate.validate(one)) || !(Calculate.validate(two))) {
+            if (!(Validators.validate(one)) || !(Validators.validate(two))) {
                 view.setRx("Invalid input");
             }
-            HashMap<Integer, Double> p = Calculate.parse_a_string(one);
-            HashMap<Integer, Double> q = Calculate.parse_a_string(two);
-            HashMap<Integer, Double> list = new HashMap<>();
+            HashMap<Integer, Double> p = Validators.parse_a_string(one);
+            HashMap<Integer, Double> q = Validators.parse_a_string(two);
             Polynomial x = new Polynomial();
             Polynomial y = new Polynomial();
             x.setPolinom(p);
             y.setPolinom(q);
-            Polynomial r = Calculate.addition(x, y);
-            for (Map.Entry<Integer, Double> a : r.getPolinom().entrySet())
-                list.put(a.getKey(), a.getValue());
-            String res = Calculate.parse_a_polinom(list);
+            Polynomial r = Operations.addition(x, y);
+            String res = Validators.parse_a_polinom((HashMap<Integer, Double>) r.getPolinom());
             view.setRx(res);
         }
     }
@@ -50,23 +47,23 @@ public class CalcController {
         public void actionPerformed(ActionEvent e) {
             String one = view.getPx();
             String two = view.getQx();
-            if (!(Calculate.validate(one)) || !(Calculate.validate(two))) {
+            if (!(Validators.validate(one)) || !(Validators.validate(two))) {
                 view.setRx("Invalid input");
             }
-            HashMap<Integer, Double> p = Calculate.parse_a_string(one);
-            HashMap<Integer, Double> q = Calculate.parse_a_string(two);
-            HashMap<Integer, Double> list = new HashMap<>();
+            HashMap<Integer, Double> p = Validators.parse_a_string(one);
+            HashMap<Integer, Double> q = Validators.parse_a_string(two);
             Polynomial x = new Polynomial();
             Polynomial y = new Polynomial();
             x.setPolinom(p);
             y.setPolinom(q);
-            if (x.equals(y)) {
-                view.setRx("nothing");
+            Polynomial r = new Polynomial();
+            r.getPolinom().put(0,0.0);
+            try {
+                r = Operations.subtraction(x, y);
+            } catch (ArithmeticException e1) {
+
             }
-            Polynomial r = Calculate.subtraction(x, y);
-            for (Map.Entry<Integer, Double> a : r.getPolinom().entrySet())
-                list.put(a.getKey(), a.getValue());
-            String res = Calculate.parse_a_polinom(list);
+            String res = Validators.parse_a_polinom((HashMap<Integer, Double>) r.getPolinom());
             view.setRx(res);
         }
     }
@@ -76,20 +73,17 @@ public class CalcController {
         public void actionPerformed(ActionEvent e) {
             String one = view.getPx();
             String two = view.getQx();
-            if (!(Calculate.validate(one)) || !(Calculate.validate(two))) {
+            if (!(Validators.validate(one)) || !(Validators.validate(two))) {
                 view.setRx("Invalid input");
             }
-            HashMap<Integer, Double> p = Calculate.parse_a_string(one);
-            HashMap<Integer, Double> q = Calculate.parse_a_string(two);
-            HashMap<Integer, Double> list = new HashMap<>();
+            HashMap<Integer, Double> p = Validators.parse_a_string(one);
+            HashMap<Integer, Double> q = Validators.parse_a_string(two);
             Polynomial x = new Polynomial();
             Polynomial y = new Polynomial();
             x.setPolinom(p);
             y.setPolinom(q);
-            Polynomial r = Calculate.multiplication(x, y);
-            for (Map.Entry<Integer, Double> a : r.getPolinom().entrySet())
-                list.put(a.getKey(), a.getValue());
-            String res = Calculate.parse_a_polinom(list);
+            Polynomial r = Operations.multiplication(x, y);
+            String res = Validators.parse_a_polinom((HashMap<Integer, Double>) r.getPolinom());
             view.setRx(res);
         }
     }
@@ -99,30 +93,24 @@ public class CalcController {
         public void actionPerformed(ActionEvent e) {
             String one = view.getPx();
             String two = view.getQx();
-            if (!(Calculate.validate(one)) || !(Calculate.validate(two))) {
+            if (!(Validators.validate(one)) || !(Validators.validate(two))) {
                 view.setRx("Invalid input");
             }
-            HashMap<Integer, Double> p = Calculate.parse_a_string(one);
-            HashMap<Integer, Double> q = Calculate.parse_a_string(two);
-            HashMap<Integer, Double> list = new HashMap<>();
-            HashMap<Integer, Double> val = new HashMap<>();
+            HashMap<Integer, Double> p = Validators.parse_a_string(one);
+            HashMap<Integer, Double> q = Validators.parse_a_string(two);
             Polynomial x = new Polynomial();
             Polynomial y = new Polynomial();
             x.setPolinom(p);
             y.setPolinom(q);
-            if (Calculate.max_degree(x) < Calculate.max_degree(y)) {
+            Polynomial d = null;
+            try {
+                d = Operations.division(x, y);
+            } catch (ArithmeticException e1) {
                 view.setRx("Division cannot be performed");
             }
-            Polynomial d = Calculate.division(x, y);
-            for (Map.Entry<Integer, Double> a : d.getPolinom().entrySet())
-                list.put(a.getKey(), a.getValue());
-            String res = Calculate.parse_a_polinom(list);
+            String res = Validators.parse_a_polinom((HashMap<Integer, Double>) d.getPolinom());
             view.setRx(res);
-            Polynomial c = Calculate.multiplication(d, y);
-            Polynomial r = Calculate.subtraction(x, c);
-            for (Map.Entry<Integer, Double> b : r.getPolinom().entrySet())
-                val.put(b.getKey(), b.getValue());
-            String rem = Calculate.parse_a_polinom(val);
+            String rem = Validators.parse_a_polinom((HashMap<Integer, Double>) x.getPolinom());
             view.setRemainder(rem);
             view.reveal(true);
 
@@ -133,17 +121,17 @@ public class CalcController {
         @Override
         public void actionPerformed(ActionEvent e) {
             String one = view.getPx();
-            if (!(Calculate.validate(one))) {
+            if (!(Validators.validate(one))) {
                 view.setRx("Invalid input");
             }
-            HashMap<Integer, Double> p = Calculate.parse_a_string(one);
+            HashMap<Integer, Double> p = Validators.parse_a_string(one);
             HashMap<Integer, Double> list = new HashMap<>();
             Polynomial x = new Polynomial();
             x.setPolinom(p);
-            Polynomial r = Calculate.derivative(x);
+            Polynomial r = Operations.derivative(x);
             for (Map.Entry<Integer, Double> a : r.getPolinom().entrySet())
                 list.put(a.getKey(), a.getValue());
-            String res = Calculate.parse_a_polinom(list);
+            String res = Validators.parse_a_polinom(list);
             view.setRx(res);
         }
     }
@@ -152,17 +140,17 @@ public class CalcController {
         @Override
         public void actionPerformed(ActionEvent e) {
             String one = view.getPx();
-            if (!(Calculate.validate(one))) {
+            if (!(Validators.validate(one))) {
                 view.setRx("Invalid input");
             }
-            HashMap<Integer, Double> p = Calculate.parse_a_string(one);
+            HashMap<Integer, Double> p = Validators.parse_a_string(one);
             HashMap<Integer, Double> list = new HashMap<>();
             Polynomial x = new Polynomial();
             x.setPolinom(p);
-            Polynomial r = Calculate.integration(x);
+            Polynomial r = Operations.integration(x);
             for (Map.Entry<Integer, Double> a : r.getPolinom().entrySet())
                 list.put(a.getKey(), a.getValue());
-            String res = Calculate.parse_a_polinom(list);
+            String res = Validators.parse_a_polinom(list);
             view.setRx(res);
         }
     }

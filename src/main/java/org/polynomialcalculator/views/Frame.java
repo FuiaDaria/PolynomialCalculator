@@ -89,6 +89,7 @@ public class Frame extends JFrame {
         Qx.setColumns(20);
         Rx = new JTextField();
         Rx.setBounds(200, 310, 275, 25);
+        Rx.setEditable(false);
         this.getContentPane().add(Rx);
         Rx.setColumns(2);
         remainder = new JTextField();
